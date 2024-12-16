@@ -1,0 +1,14 @@
+[
+  {
+    "arguments": [
+      "/nix/store/4apajimszc47rxwcpvc3g3rj2icinl71-gcc-wrapper-13.3.0/bin/gcc",
+      "-c",
+      "-o",
+      "main",
+      "main.c"
+    ],
+    "directory": "/home/kinveth/dev/arcos",
+    "file": "/home/kinveth/dev/arcos/main.c",
+    "output": "/home/kinveth/dev/arcos/main"
+  }
+]
