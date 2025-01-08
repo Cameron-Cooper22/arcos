@@ -1,0 +1,17 @@
+[
+  {
+    "arguments": [
+      "/home/kinveth/opt/cross/bin/x86_64-elf-gcc",
+      "-ggdb",
+      "-c",
+      "-ffreestanding",
+      "-Iinc/",
+      "-o",
+      "src/kernel.o",
+      "src/kernel.c"
+    ],
+    "directory": "/home/kinveth/dev/arcos/kernel",
+    "file": "/home/kinveth/dev/arcos/kernel/src/kernel.c",
+    "output": "/home/kinveth/dev/arcos/kernel/src/kernel.o"
+  }
+]
