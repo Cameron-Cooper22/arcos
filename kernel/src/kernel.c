@@ -2,20 +2,19 @@
 
 int kernel_main() {
   set_cursor_pos(0, 0);
+  clear_win(COLOR_BLK, COLOR_YEL);
 
-  clear_win(COLOR_BLK, COLOR_LCY);
+  const char *first = "\n\n\nWe can now handle some special characters.";
+  putstr(first, COLOR_BLK, COLOR_YEL);
 
-  const char *first = "More advanced vga driver";
+  const char *second = "\nLike tab \t and newline";
+  putstr(second, COLOR_BLK, COLOR_YEL);
 
-  putstr(first, COLOR_BLK, COLOR_LCY);
+  const char *third = "\nAnd it scrolls!";
 
-  const char *second = "It even wraps the text around the screen and moves the cursor correctly. ";
-
-  putstr(second, COLOR_BLK, COLOR_LCY);
-
-  const char *third = "But if we reach the end of the screen it still doesn't quite scroll properly...";
-
-  putstr(third, COLOR_BLK, COLOR_LCY);
+  for (u16_t i = 0; i < 30; i++) {
+    putstr(third, COLOR_BLK, COLOR_YEL);
+  }
 
   return 0;
 }

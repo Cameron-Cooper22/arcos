@@ -14,7 +14,7 @@ then
     kernel_sectors=$(( ($kernel_size + 511) / 512 ))
     printf %02x $kernel_sectors | xxd -r -p | dd of=boot/boot bs=1 seek=2 count=1 conv=notrunc
 
-    cp boot/boot ./os.img
+    cp boot/boot build/os.img
     cat kernel/kernel >> os.img
 
     echo "Build finished successfully"

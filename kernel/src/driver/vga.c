@@ -1,3 +1,4 @@
+#include <types.h>
 #include <cpu/ports.h>
 #include <driver/vga.h>
 
@@ -22,14 +23,47 @@ void clear_win(const u8_t fg_color, const u8_t bg_color) {
 }
 
 void putchar(const char character, const u8_t fg_color, const u8_t bg_color) {
-  u8_t style = vga_color(fg_color, bg_color);
-  vga_char printed = {
-    .character = character,
-    .style = style
-  };
 
   u16_t position = get_cursor_pos();
-  TEXT_AREA[position] = printed;
+
+  if (character == '\n') {
+    u8_t current_row = (u8_t) (position / VGA_WIDTH);
+
+    if (++current_row >= VGA_HEIGHT)
+      scroll_line();
+    else
+      set_cursor_pos(0, current_row);
+
+  }
+
+  else if (character == '\b') {
+    reverse_cursor();
+    putchar(' ', fg_color, bg_color);
+    reverse_cursor();
+  }
+  
+  else if (character == '\r') {
+    u8_t current_row = (u8_t) (position / VGA_WIDTH);
+
+    set_cursor_pos(0, current_row);
+  }
+
+  else if (character == '\t') {
+    for (u8_t i = 0; i < 4; i++) {
+      putchar(' ', fg_color, bg_color);
+    }
+    advance_cursor();
+  }
+
+  else {
+    u8_t style = vga_color(fg_color, bg_color);
+    vga_char printed = {
+      .character = character,
+      .style = style
+    };
+
+    TEXT_AREA[position] = printed;
+  }
 }
 
 void putstr(const char *str, const u8_t fg_color, const u8_t bg_color) {
@@ -84,6 +118,17 @@ void advance_cursor() {
   byte_out(CURSOR_PORT_DATA, (u8_t) ((pos >> 8) & 0xFF));
 }
 
+void reverse_cursor() {
+  u16_t pos = get_cursor_pos();
+  pos--;
+
+  byte_out(CURSOR_PORT_COMMAND, 0x0f);
+  byte_out(CURSOR_PORT_DATA, (u8_t) (pos & 0xff));
+
+  byte_out(CURSOR_PORT_COMMAND, 0x0e);
+  byte_out(CURSOR_PORT_DATA, (u8_t) ((pos >> 8) & 0xff));
+}
+
 void set_cursor_pos(u8_t x, u8_t y){
     u16_t pos = x + ((u16_t) VGA_WIDTH * y);
 
@@ -96,4 +141,30 @@ void set_cursor_pos(u8_t x, u8_t y){
 
     byte_out(CURSOR_PORT_COMMAND, 0x0E);
     byte_out(CURSOR_PORT_DATA, (u8_t) ((pos >> 8) & 0xFF));
+}
+
+void scroll_line() {
+  // copy up
+  for (u16_t i = 1; i < VGA_HEIGHT; i++) {
+    for (u16_t j = 0; j < VGA_WIDTH; j++) {
+      u16_t to_pos = j + ((i - 1) * VGA_WIDTH);
+      u16_t from_pos = j + (i * VGA_WIDTH);
+      TEXT_AREA[to_pos] = TEXT_AREA[from_pos];
+    }
+  }
+  // clear final row
+  u16_t i = VGA_HEIGHT - 1;
+  for (u16_t j = 0; j < VGA_WIDTH; j++) {
+    u16_t pos = j + (i * VGA_WIDTH);
+
+    vga_char current = TEXT_AREA[pos];
+    vga_char clear = {
+      .character = ' ',
+      .style = current.style
+    };
+
+    TEXT_AREA[pos] = clear;
+  }
+  // return to beginning
+  set_cursor_pos(0, VGA_HEIGHT - 1);
 }
