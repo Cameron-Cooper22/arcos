@@ -1,9 +1,6 @@
 #include "types.h"
 #include <cpu/idt.h>
 
-idt_gate main_idt[IDT_ENTRIES];
-idt_register main_idt_reg;
-
 void set_idt() {
   main_idt_reg.base = (u64_t) &main_idt;
   main_idt_reg.limit = (IDT_ENTRIES * sizeof(idt_gate)) - 1;

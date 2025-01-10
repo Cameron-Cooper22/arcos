@@ -4,7 +4,7 @@
 #include <driver/vga.h>
 
 /* https://wiki.osdev.org/Exceptions */
-char* exception_messages[] = {
+const char* exception_messages[] = {
   "Division by Zero",
   "Debug",
   "Non-maskable Interrupt",
