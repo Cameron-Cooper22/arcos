@@ -1,5 +1,8 @@
 #!/bin/bash
 
+rm -f os.img
+(make -C kernel clean)
+
 (cd boot ; nasm -o boot boot.asm)
 boot_result=$?
 
@@ -15,7 +18,8 @@ then
     printf %02x $kernel_sectors | xxd -r -p | dd of=boot/boot bs=1 seek=2 count=1 conv=notrunc
 
     cp boot/boot build/os.img
-    cat kernel/kernel >> os.img
+    cat kernel/kernel >> build/os.img
+    dd if=/dev/zero bs=1 count=512 >> build/os.img
 
     echo "Build finished successfully"
 else

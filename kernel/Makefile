@@ -11,7 +11,7 @@ ASM_SRC = $(shell find . -type f -name "*.asm")
 OBJ = ${ASM_SRC:.asm=.o} ${SRC:.c=.o} 
 
 CCFLAGS = -ggdb -c -ffreestanding ${INC} -Wall
-LDFLAGS = -T kernel.ld
+LDFLAGS = -T linker.ld
 LDFLAGS_BIN = ${LDFLAGS} --oformat binary
 ASFLAGS = -f elf64
 

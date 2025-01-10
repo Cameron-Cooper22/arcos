@@ -8,11 +8,20 @@ SECTIONS {
     *(.startup)
   }
 
-  .text : { *(.text) }
+  .text : {
+    *(.text) 
+  }
 
-  .rodata : { *(.rodata) }
+  .rodata (READONLY) : {
+    *(.rodata) 
+  }
 
-  .data : { *(.data) }
+  .data : { 
+    *(.data) 
+  }
 
-  .bss : { *(.bss) }
+  .bss : {
+    *(COMMON)
+    *(.bss) 
+  }
 }
