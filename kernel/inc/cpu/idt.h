@@ -23,8 +23,8 @@ typedef struct __attribute__((packed)) {
   u32_t reserved;
 } idt_gate;
 
-extern idt_gate main_idt[IDT_ENTRIES];
-extern idt_register main_idt_reg;
+static idt_gate main_idt[IDT_ENTRIES];
+static idt_register main_idt_reg;
 
 void set_idt();
 void set_idt_gate(u8_t gate_idx, u64_t handler_address);

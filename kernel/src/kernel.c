@@ -1,6 +1,9 @@
+#include "cpu/isr.h"
 #include <driver/vga.h>
 
 int kernel_main() {
+
+  init_isr();
   set_cursor_pos(0, 0);
   clear_win(COLOR_BLK, COLOR_YEL);
 
