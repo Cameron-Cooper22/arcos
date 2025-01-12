@@ -1,20 +1,4 @@
-version = "0.1"
-
-[assemblers]
-gas = false
-go = false
-z80 = false
-masm = false
-nasm = true
-
-[instruction_sets]
-x86 = false
-x86_64 = true
-z80 = false
-arm = false
-riscv = false
-
-[opts]
-compiler = "x86_64-elf-gcc"
-diagnostics = true
-default_diagnostics = true
+[[project]]
+path = "./"
+assembler = "nasm"
+instruction_set = "x86/x86_64"
