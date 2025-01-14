@@ -1,0 +1,38 @@
+[
+  {
+    "arguments": [
+      "/home/kinveth/opt/cross/bin/x86_64-elf-gcc",
+      "-c",
+      "-ffreestanding",
+      "-Wall",
+      "-pedantic",
+      "-Wextra",
+      "-Iinclude",
+      "-Ilibc/include",
+      "-o",
+      "build/x86_64/kmain.o",
+      "kernel/kmain.c"
+    ],
+    "directory": "/home/kinveth/dev/arcos",
+    "file": "/home/kinveth/dev/arcos/kernel/kmain.c",
+    "output": "/home/kinveth/dev/arcos/build/x86_64/kmain.o"
+  },
+  {
+    "arguments": [
+      "/home/kinveth/opt/cross/bin/x86_64-elf-gcc",
+      "-c",
+      "-ffreestanding",
+      "-Wall",
+      "-pedantic",
+      "-Wextra",
+      "-Iinclude",
+      "-Ilibc/include",
+      "-o",
+      "build/x86_64/drivers/vga.o",
+      "kernel/drivers/vga.c"
+    ],
+    "directory": "/home/kinveth/dev/arcos",
+    "file": "/home/kinveth/dev/arcos/kernel/drivers/vga.c",
+    "output": "/home/kinveth/dev/arcos/build/x86_64/drivers/vga.o"
+  }
+]

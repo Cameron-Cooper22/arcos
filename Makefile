@@ -5,10 +5,10 @@ AS=nasm
 BOOT_x86_64_ASM_SRC := $(shell find arch/x86_64/boot/ -name *.asm)
 BOOT_x86_64_ASM_OBJS := $(patsubst arch/x86_64/boot/%.asm, build/x86_64/%.o, $(BOOT_x86_64_ASM_SRC))
 
-KERNEL_C_SRC:=$(wildcard kernel/*.c)
+KERNEL_C_SRC:=$(shell find kernel -name *.c)
 KERNEL_C_OBJS:=$(patsubst kernel/%.c, build/x86_64/%.o, $(KERNEL_C_SRC))
 
-BASE_CC_FLAGS=-c -ffreestanding -Wall -pedantic -Wextra -Iarcos
+BASE_CC_FLAGS=-c -ffreestanding -Wall -pedantic -Wextra -Iinclude -Ilibc/include -nostdlib 
 BASE_AS_FLAGS=-f elf64
 BASE_LD_FLAGS=-n -o
 
@@ -20,7 +20,7 @@ $(BOOT_x86_64_ASM_OBJS): build/x86_64/%.o : arch/x86_64/boot/%.asm
 
 $(KERNEL_C_OBJS): build/x86_64/%.o : kernel/%.c
 	mkdir -p $(dir $@) && \
-	${CC} $(KERNEL_C_SRC) ${BASE_CC_FLAGS} -o $@
+	${CC} $(patsubst build/x86_64/%.o, kernel/%.c, $@) ${BASE_CC_FLAGS} -o $@
 
 .PHONY: clean build
 build: $(OBJS)
