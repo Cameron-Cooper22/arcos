@@ -1,0 +1,20 @@
+[binaries]
+c = 'clang'
+ar = 'x86_64-elf-ar'
+strip = 'x86_64-elf-strip'
+rust = 'rustc'
+c_ld = 'lld'
+
+[built-in options]
+c_args = ['-ffreestanding', '--target=x86_64-elf']
+c_link_args = ['-ffreestanding', '-nostdlib', '-lgcc']
+rust_args = ['--target=x86_64-unknown-none']
+
+[properties]
+has_function_printf = false
+
+[host_machine]
+system = 'arcos'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'

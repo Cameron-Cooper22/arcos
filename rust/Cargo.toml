@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+
+members = [
+  "file_systems",
+  "network_stack",
+  "memory",
+  "proc_management",
+  "common"
+]

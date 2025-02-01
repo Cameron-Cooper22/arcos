@@ -1,0 +1,5 @@
+subdir('common')
+subdir('file_systems')
+subdir('memory')
+subdir('network_stack')
+subdir('proc_management')
