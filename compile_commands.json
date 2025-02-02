@@ -1,38 +1,14 @@
 [
   {
-    "arguments": [
-      "/home/kinveth/opt/cross/bin/x86_64-elf-gcc",
-      "-c",
-      "-ffreestanding",
-      "-Wall",
-      "-pedantic",
-      "-Wextra",
-      "-Iinclude",
-      "-Ilibc/include",
-      "-o",
-      "build/x86_64/kmain.o",
-      "kernel/kmain.c"
-    ],
-    "directory": "/home/kinveth/dev/arcos",
-    "file": "/home/kinveth/dev/arcos/kernel/kmain.c",
-    "output": "/home/kinveth/dev/arcos/build/x86_64/kmain.o"
+    "directory": "/home/kinveth/dev/arcos/build-x86_64",
+    "command": "clang -Iarcos.bin.p -I. -I.. -I../include -I../libc/include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=c23 -O0 -g -ffreestanding --target=x86_64-elf -mcmodel=kernel -Wall -Wextra -fno-exceptions -fno-rtti -MD -MQ arcos.bin.p/kernel_kernel.c.o -MF arcos.bin.p/kernel_kernel.c.o.d -o arcos.bin.p/kernel_kernel.c.o -c ../kernel/kernel.c",
+    "file": "../kernel/kernel.c",
+    "output": "arcos.bin.p/kernel_kernel.c.o"
   },
   {
-    "arguments": [
-      "/home/kinveth/opt/cross/bin/x86_64-elf-gcc",
-      "-c",
-      "-ffreestanding",
-      "-Wall",
-      "-pedantic",
-      "-Wextra",
-      "-Iinclude",
-      "-Ilibc/include",
-      "-o",
-      "build/x86_64/drivers/vga.o",
-      "kernel/drivers/vga.c"
-    ],
-    "directory": "/home/kinveth/dev/arcos",
-    "file": "/home/kinveth/dev/arcos/kernel/drivers/vga.c",
-    "output": "/home/kinveth/dev/arcos/build/x86_64/drivers/vga.o"
+    "directory": "/home/kinveth/dev/arcos/build-x86_64",
+    "command": "clang -Iarcos.bin.p -I. -I.. -I../include -I../libc/include -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=c23 -O0 -g -ffreestanding --target=x86_64-elf -mcmodel=kernel -Wall -Wextra -fno-exceptions -fno-rtti -MD -MQ arcos.bin.p/kernel_kernel_tty.c.o -MF arcos.bin.p/kernel_kernel_tty.c.o.d -o arcos.bin.p/kernel_kernel_tty.c.o -c ../kernel/kernel/tty.c",
+    "file": "../kernel/kernel/tty.c",
+    "output": "arcos.bin.p/kernel_kernel_tty.c.o"
   }
 ]

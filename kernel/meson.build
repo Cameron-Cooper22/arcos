@@ -1,6 +1,7 @@
-kernel_sources = ['kernel/kernel.c', 'kernel/kernel/tty.c']
+subdir('kernel')
+kernel_sources = ['kernel/kernel.c']
+kernel_sources = kernel_sources + kernel_kernel_srcs
 
-cc = find_program('clang')
 
 # c_gen = generator(cc,
 #   output: '@BASENAME@.o',

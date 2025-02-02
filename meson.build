@@ -13,11 +13,11 @@ x86_64_ld_script = files('arch/x86_64/linker.ld')
 
 nasm = find_program('nasm')
 
-asm_gen = generator(nasm,
+x86_64_asm_gen = generator(nasm,
   output: '@BASENAME@.o',
   arguments: ['-felf64', '@INPUT@', '-o', '@OUTPUT@'])
 
-asm_gen_objs = asm_gen.process(x86_64_asm_srcs)
+x86_64_asm_gen_objs = x86_64_asm_gen.process(x86_64_asm_srcs)
 
 kerneldirs = include_directories('include')
 libcincdir = include_directories('libc/include')
@@ -30,7 +30,7 @@ subdir('kernel')
 # option('target_arch', type: 'string', value: 'x86_64', description: 'Target for the x86_64 architecture')
 
 x86_64_kernel = executable(
-  'arcos.bin', asm_gen_objs, kernel_sources,
+  'arcos.bin', x86_64_asm_gen_objs, asm_gen_objs, kernel_sources,
   c_args: ['-mcmodel=kernel', '-Wall', '-Wextra', '-fno-exceptions', '-fno-rtti'],
   link_args: ['-no-pie', '-mcmodel=kernel', '-masm=intel', '-v', '-lgcc', '-T', '../arch/x86_64/linker.ld'], # ../arch/x86_64/linker.ld bc this runs within a build dir
   link_depends: x86_64_ld_script,
