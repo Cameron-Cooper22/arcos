@@ -1,0 +1,13 @@
+#ifndef __ARCOS_LIMITS
+#define __ARCOS_LIMITS
+
+#define MAX_CORES 20
+#define MAX_ORDER 12
+
+#define PAGE_SIZE 0x1000
+
+#define KERNEL_TEXT_BASE 0xffffffff80000000
+#define KERNEL_PHYS_MAP_END 0x1000000
+#define KERNEL_LOGICAL_BASE 0xffff800000000000
+
+#endif

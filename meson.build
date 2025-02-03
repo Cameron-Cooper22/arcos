@@ -32,7 +32,7 @@ subdir('kernel')
 x86_64_kernel = executable(
   'arcos.bin', x86_64_asm_gen_objs, asm_gen_objs, kernel_sources,
   c_args: ['-mcmodel=kernel', '-Wall', '-Wextra', '-fno-exceptions', '-fno-rtti'],
-  link_args: ['-no-pie', '-mcmodel=kernel', '-masm=intel', '-v', '-lgcc', '-T', '../arch/x86_64/linker.ld'], # ../arch/x86_64/linker.ld bc this runs within a build dir
+  link_args: ['-no-pie', '-mcmodel=kernel', '-v', '-lgcc', '-T', '../arch/x86_64/linker.ld'], # ../arch/x86_64/linker.ld bc this runs within a build dir
   link_depends: x86_64_ld_script,
   include_directories: [kerneldirs, libcincdir]
 )

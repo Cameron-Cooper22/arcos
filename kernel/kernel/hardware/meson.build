@@ -1,4 +1,4 @@
-kernel_kernel_hardware_asm_srcs = ['isr_defs.asm']
+kernel_kernel_hardware_asm_srcs = ['isr_defs.asm', 'apic.asm']
 kernel_kernel_hardware_srcs = ['kernel/kernel/hardware/interrupts.c']
 
 nasm = find_program('nasm')
