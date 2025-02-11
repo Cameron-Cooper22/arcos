@@ -1,4 +1,11 @@
-[[project]]
-path = "./"
+[default_config]
 assembler = "nasm"
-instruction_set = "x86/x86_64"
+instruction_set = "x86/x86-64"
+
+[default_config.opts]
+compiler = "nasm"
+compile_flags_txt = []
+diagnostics = true
+default_diagnostics = false
+
+
