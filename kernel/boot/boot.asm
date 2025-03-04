@@ -5,6 +5,10 @@
   PAGE_PRESENT equ 0x01
   PAGE_WRITE equ 0x02
   ENTRIES_PER_PT equ 512
+  KERNEL_OFFSET equ 0xffffff8000000000
+
+%define V2P(x) (x - KERNEL_OFFSET)
+%define P2V(x) (x + KERNEL_OFFSET)
 
   section .bss
   align PAGE_SIZE
@@ -27,13 +31,14 @@ BootGDTp:
   align PAGE_SIZE
   global BootP4
 BootP4:
-  dq BootP3 + (PAGE_PRESENT | PAGE_WRITE)
-  times (ENTRIES_PER_PT - 1) dq 0 ; once again i fucking love nasm
+  dq V2P(BootP3) + (PAGE_PRESENT | PAGE_WRITE)
+  times (ENTRIES_PER_PT - 2) dq 0 ; once again i fucking love nasm
+  dq V2P(BootP3) + (PAGE_PRESENT | PAGE_WRITE)
 BootP3:
-  dq BootP2 + (PAGE_PRESENT | PAGE_WRITE)
+  dq V2P(BootP2) + (PAGE_PRESENT | PAGE_WRITE)
   times (ENTRIES_PER_PT - 1) dq 0
 BootP2:
-  dq BootP1 + (PAGE_PRESENT | PAGE_WRITE)
+  dq V2P(BootP1) + (PAGE_PRESENT | PAGE_WRITE)
   times (ENTRIES_PER_PT - 1) dq 0
 BootP1:
   %assign i 0
@@ -47,7 +52,7 @@ BootP1:
   [bits 32]
 _start:
   cli
-  mov esp, BootStack_Top
+  mov esp, V2P(BootStack_Top)
 
   ; TODO: Check for cpuid and other lm information, for now just fail
   ;	  with unhandled errors if 32 bit.
@@ -56,7 +61,7 @@ _start:
   or eax, 1 << 5
   mov cr4, eax
 
-  mov eax, BootP4
+  mov eax, V2P(BootP4)
   mov cr3, eax
 
   mov ecx, 0x0c0000080
@@ -68,9 +73,9 @@ _start:
   or eax, 1 << 31
   mov cr0, eax
 
-  lgdt [BootGDTp]
+  lgdt [V2P(BootGDTp)]
 
-  jmp 0x8:lm_start
+  jmp 0x8:V2P(lm_start)
 
   [bits 64]
 lm_start:
@@ -78,5 +83,38 @@ lm_start:
   mov ss, eax
   mov ds, eax
   mov es, eax
+  mov fs, eax
+  mov gs, eax
 
+  mov rax, upper_memory
+  jmp rax
+
+upper_memory:
+  mov rax, KERNEL_OFFSET
+  add rsp, rax
+
+  mov rax, 0
+  mov [BootP4], rax
+
+  mov rax, cr3
+  mov cr3, rax
+
+  mov rax, BootGDTp
+  lgdt [rax]
+  mov rax, 0x0
+  mov ss, rax
+  mov ds, rax
+  mov es, rax
+
+  mov rax, reload_cs
+  push 0x8
+  push rax
+  retfq
+reload_cs:
+
+  extern kmain
+  mov rax, kmain
+  call rax
+
+  hlt
   jmp $
