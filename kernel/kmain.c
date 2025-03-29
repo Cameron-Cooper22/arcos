@@ -1,2 +1,0 @@
-void kmain(void) {
-}
