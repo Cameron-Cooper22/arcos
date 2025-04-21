@@ -1,4 +1,0 @@
-[[project]]
-path = "./"
-assembler = "nasm"
-instruction_set = "x86/x86_64"
