@@ -1,4 +1,5 @@
 #include <memory.h>
+.intel_syntax noprefix
 
 .section .bss
 .align PAGE_SIZE
@@ -6,11 +7,11 @@
 BootStack:
 
 .section .text
-.intel_syntax noprefix
 .code32
 .global _start
 _start:
   cli
+
   mov esp, offset V2P(BootStack)
   
   // PAE bit
@@ -45,8 +46,6 @@ lm_start:
   mov ss, eax
   mov ds, eax
   mov es, eax
-  mov fs, eax
-  mov gs, eax
 
   movabs rax, offset upper_memory
   jmp rax
@@ -61,13 +60,13 @@ upper_memory:
   mov rax, cr3
   mov cr3, rax
 
+
+  movabs rax, offset GDTp
   lgdt [rax]
   mov rax, 0x0
   mov ss, rax
   mov ds, rax
   mov es, rax
-  mov fs, rax
-  mov gs, rax
 
   movabs rax, offset .reload_cs
   pushq 0x8
