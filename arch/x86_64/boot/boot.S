@@ -1,3 +1,5 @@
+#include <memory.h>
+
 .section .bss
 .align PAGE_SIZE
 .skip PAGE_SIZE
@@ -59,7 +61,7 @@ upper_memory:
   mov rax, cr3
   mov cr3, rax
 
-  lgdt[rax]
+  lgdt [rax]
   mov rax, 0x0
   mov ss, rax
   mov ds, rax

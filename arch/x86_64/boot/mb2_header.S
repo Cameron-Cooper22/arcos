@@ -9,3 +9,4 @@ multiboot_header:
   .short 0
   .short 0
   .long 8
+multiboot_header_end:

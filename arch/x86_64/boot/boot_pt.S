@@ -1,4 +1,5 @@
 #include <memory.h>
+.intel_syntax noprefix
 .section .data
 .align PAGE_SIZE
 

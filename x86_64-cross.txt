@@ -2,7 +2,6 @@
 c = 'x86_64-elf-gcc'       # Cross-compiler for C (64-bit ELF)
 ar = 'x86_64-elf-ar'
 ld = 'x86_64-elf-ld'
-rust = 'rustc'             # Rust compiler (we'll specify target via flags)
 objcopy = 'x86_64-elf-objcopy'
 strip = 'x86_64-elf-strip'
 
@@ -20,6 +19,6 @@ c_link_args = ['-nostdlib', '-static', '-Wl,-z,max-page-size=0x1000', '-ffreesta
 # ^ -nostdlib: no libc/startup; -static: no dynamic linking; 
 #   max-page-size=0x1000: avoid default 2MB page alignment in ld&#8203;:contentReference[oaicite:0]{index=0}.
 rust_args = ['--target', 'x86_64-unknown-none', '-Ccode-model=kernel',
-             '-Ctarget-feature=-mmx,-sse,-sse2', '-Cpanic=abort']
+             '-Ctarget-feature=-mmx,-sse,-sse2', '-Cpanic=abort', '-Clinker=x86_64-elf-ld']
 # ^ Target the built-in Rust tier-2 target for bare-metal x86_64&#8203;:contentReference[oaicite:1]{index=1}&#8203;:contentReference[oaicite:2]{index=2},
 #   disable SSE/FP (already default for this target), use large code model.
