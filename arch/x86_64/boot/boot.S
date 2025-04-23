@@ -52,7 +52,7 @@ lm_start:
   jmp rax
 
 upper_memory:
-  mov rax, KERNEL_OFFSET
+  movabs rax, KERNEL_OFFSET
   add rsp, rax
 
   mov rax, 0
