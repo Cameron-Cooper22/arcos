@@ -16,7 +16,7 @@ rust_args = ['--target', 'x86_64-unknown-none', '-Ccode-model=kernel',
 arch = get_option('arch')
 
 if arch == ''
-  message('Specify processor architecture in build options')
+  error('Specify processor architecture in build options')
 endif
 
 inc_dir = meson.project_source_root() + '/include'
@@ -30,7 +30,7 @@ asm_srcs = arch_boot_asm_srcs
 asm_objs = []
 foreach f : asm_srcs
   obj_name = f.full_path().split('/')[-1].split('.')[0] + '.o'
-
+  
   obj = custom_target(
     obj_name,
     input: f,
@@ -41,7 +41,6 @@ foreach f : asm_srcs
   )
   asm_objs += obj
 
-  message('Object File Generated: ' + obj_name)
 endforeach
 
 c_srcs = kernel_srcs
@@ -58,17 +57,15 @@ foreach f : c_srcs
   )
   c_objs += obj
 
-  message('Object File Generated: ' + obj_name)
 endforeach
 
 kernel_binary = executable(
   'kernel.bin',
   c_objs + asm_objs,
-  link_args: ['-nostdlib', '-mcmodel=kernel', '-T', linker_script],
+  link_args: ['-ffreestanding', '-nostdlib', '-mcmodel=kernel', '-T', linker_script],
   install: false
 )
 
-message('Kernel Binary File created.')
 
 
 # kernel_elf = executable('kernel.elf', [boot_asm, kernel_c, rust_lib], 
