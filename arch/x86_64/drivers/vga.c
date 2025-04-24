@@ -1,5 +1,7 @@
 #include <drivers/vga.h>
 #include <stdint.h>
+#include <memory.h>
+#include <ports.h>
 
 #define VGA_COLS 80
 #define VGA_ROWS 24
@@ -27,7 +29,7 @@ uint64_t cursor;
 uint8_t format;
 
 void vga_init() {
-  vga_memory = VGA_MEMORY;
+  vga_memory = (void *) VGA_MEMORY;
   memset(vga_memory, 0, VGA_SIZE * sizeof(struct vga_cell_t));
   format = 0x07; // 0b00000111
 }
@@ -64,5 +66,5 @@ void vga_write(char c) {
   }
   scroll();
   flush();
-  movecursor();
+  move_cursor();
 }

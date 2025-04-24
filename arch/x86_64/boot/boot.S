@@ -12,6 +12,9 @@ BootStack:
 _start:
   cli
 
+  mov edi, eax
+  mov esi, ebx
+
   mov esp, offset V2P(BootStack)
   
   // PAE bit

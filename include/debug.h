@@ -19,6 +19,8 @@
 #define debug_error(...)
 #endif
 
+#include <stddef.h>
+
 void debug_printf(char *fmt, ...);
 void debug_puts(char *s);
 void debug_putsn(char *s, size_t n);

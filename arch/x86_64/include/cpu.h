@@ -3,8 +3,7 @@
 
 #include <stdint.h>
 
-struct cpu
-{
+struct cpu {
   void *cpu;
   uint64_t gdt[6];
   uint8_t tss[104];

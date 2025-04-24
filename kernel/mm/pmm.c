@@ -19,6 +19,6 @@ uint64_t pmm_alloc() {
 
 uint64_t pmm_calloc() {
   uint64_t page = pmm_alloc();
-  memset(P2V(page), 0, PAGE_SIZE);
+  memset((void *) P2V(page), 0, PAGE_SIZE);
   return page;
 }

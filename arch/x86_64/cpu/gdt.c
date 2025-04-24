@@ -1,5 +1,6 @@
 #include <memory.h>
 #include <stdint.h>
+#include <cpu.h>
 
 #define GDT_CODE      (0x18<<8)
 #define GDT_DATA      (0x12<<8)
@@ -52,4 +53,22 @@ struct gdt_p GDTp = {
 
 void gdt_init(struct cpu *c) {
   struct gdt *gdt = (void *) c->gdt;
+  memcpy(gdt, BootGDT, sizeof(BootGDT));
+
+  struct tss *tss = (void *) c -> tss;
+  tss -> io_mba = sizeof(struct tss);
+
+  uint32_t tss_limit = sizeof(struct tss);
+  uint64_t tss_base = (uint64_t) tss;
+  gdt[4].flags = GDT_PRESENT | GDT_TSS;
+  gdt[4].flags |= ((tss_base >> 24) & 0xff) << 24;
+  gdt[4].flags |= (tss_base >> 16) & 0xff;
+  gdt[4].flags |= ((tss_limit >> 16) & 0x0f) << 16;
+  gdt[4].addr = ((tss_base & 0xffff) << 16) | (tss_limit & 0xffff);
+  gdt[5].addr = (tss_base >> 32) & 0xffffffff;
+
+  GDTp.len = 6*8 - 1;
+  GDTp.gdt = gdt;
+
+  load_gdt(&GDTp);
 }

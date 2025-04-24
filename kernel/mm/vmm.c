@@ -18,8 +18,8 @@
 
 uint64_t new_P4() {
   uint64_t p4 = pmm_alloc();
-  memcpy(P2V(p4), (void *) kernel_P4, PAGE_SIZE);
-  return p4
+  memcpy((void *) P2V(p4), (void *) kernel_P4, PAGE_SIZE);
+  return p4;
 }
 
 static int page_exists(uint64_t P4, uint64_t addr) {
@@ -101,13 +101,13 @@ size_t memcpy_to_p4(uint64_t P4, void *dst, void *src, size_t n) {
     uintptr_t page = vmm_get_page(P4, (uintptr_t)dst);
     if (!PAGE_EXIST(page)) return copied;
 
-    void *to = P2V(MASK_FLAGS(page) + offset(dst));
+    void *to = (void * ) P2V(MASK_FLAGS(page) + offset(dst));
     memcpy(to, src, bytes);
 
     copied += bytes;
     n -= bytes;
-    dst = incptr(dst, bytes);
-    src = incptr(src, bytes);
+    dst = (void *) incptr(dst, bytes);
+    src = (void *) incptr(src, bytes);
   }
   return copied;
 }
@@ -119,13 +119,13 @@ size_t memcpy_from_p4(void *dst, uint64_t P4, void *src, size_t n) {
     uintptr_t page = vmm_get_page(P4, (uintptr_t)src);
     if (!PAGE_EXIST(page)) return copied;
 
-    void *from = P2V(MASK_FLAGS(page) + offset(src));
+    void *from = (void *) P2V(MASK_FLAGS(page) + offset(src));
     memcpy(dst, from, bytes);
 
     copied += bytes;
     n -= bytes;
-    dst = incptr(dst, bytes);
-    src = incptr(src, bytes);
+    dst = (void *) incptr(dst, bytes);
+    src = (void *) incptr(src, bytes);
   }
   return copied;
 }

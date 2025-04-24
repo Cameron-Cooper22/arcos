@@ -1,8 +1,8 @@
-arch_boot_asm_srcs = files(
+arch_boot_srcs = files(
   'boot.S',
-  'boot_gdt.S',
   'boot_pt.S',
-  'mb2_header.S'
+  'mb2_header.S',
+  'multiboot.c'
 )
 
 ld_script = files('linker.ld')

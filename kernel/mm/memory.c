@@ -1,8 +1,8 @@
 #include <memory.h>
 #include <debug.h>
 #include <stdint.h>
+#include <multiboot.h>
 
-uint64_t kernel_P4;
 
 void memory_init() {
   kernel_P4 = (uint64_t) &BootP4;

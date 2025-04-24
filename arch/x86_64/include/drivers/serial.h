@@ -1,7 +1,6 @@
 #ifndef __ARCOS_x86_64_DRIVER_SERIAL_H
 #define __ARCOS_x86_64_DRIVER_SERIAL_H
 
-#include <cstdint>
 #include <stdint.h>
 
 #define PORT_COM1 0x3f8

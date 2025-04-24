@@ -1,12 +1,18 @@
-.section .multiboot.data, "a"
-.align 8
-multiboot_header:
-  .long 0xe85250d6
-  .long 0
-  .long multiboot_header_end - multiboot_header
-  # optional flags can be put here
-  # TODO: look into extra features to be requested from GRUB2
-  .short 0
-  .short 0
-  .long 8
-multiboot_header_end:
+#define MBOOT2_MAGIC 0xE85250D6
+#define MBOOT2_ARCH 0
+#define MBOOT2_LENGTH (Multiboot2HeaderEnd - Multiboot2Header)
+#define MBOOT2_CHECKSUM -(MBOOT2_MAGIC + MBOOT2_ARCH + MBOOT2_LENGTH)
+
+.section .multiboot
+
+.align 0x8
+Multiboot2Header:
+.long MBOOT2_MAGIC
+.long MBOOT2_ARCH
+.long MBOOT2_LENGTH
+.long MBOOT2_CHECKSUM
+
+.short 0
+.short 0
+.long 8
+Multiboot2HeaderEnd:

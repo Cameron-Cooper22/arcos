@@ -24,44 +24,31 @@ inc_dir = meson.project_source_root() + '/include'
 subdir('arch')
 subdir('kernel')
 
+arch_inc_dir
+
 linker_script = ld_script[0].full_path()
 
-asm_srcs = arch_boot_asm_srcs
-asm_objs = []
-foreach f : asm_srcs
-  obj_name = f.full_path().split('/')[-1].split('.')[0] + '.o'
-  
-  obj = custom_target(
-    obj_name,
-    input: f,
-    output: obj_name,
-    command: [cc, '-I', inc_dir, '-mcmodel=kernel', '-c', '@INPUT@', '-o', '@OUTPUT@'],
-    build_by_default: true
-    # Check if GCC needs capture set to true for this
-  )
-  asm_objs += obj
+srcs = kernel_srcs + arch_srcs
+objs = []
 
-endforeach
 
-c_srcs = kernel_srcs
-c_objs = []
-foreach f : c_srcs
+foreach f : srcs
   obj_name = f.full_path().split('/')[-1].split('.')[0] + '.o'
 
   obj = custom_target(
     obj_name,
     input: f,
     output: obj_name,
-    command: [cc , '-I', inc_dir, '-c', '-mcmodel=kernel', '@INPUT@', '-o', '@OUTPUT@'] + c_args,
+    command: [cc , '-I', inc_dir, '-I', arch_inc_dir, '-c', '-mcmodel=kernel', '@INPUT@', '-o', '@OUTPUT@'] + c_args,
     build_by_default: true
   )
-  c_objs += obj
+  objs += obj
 
 endforeach
 
 kernel_binary = executable(
   'kernel.bin',
-  c_objs + asm_objs,
+  objs,
   link_args: ['-ffreestanding', '-nostdlib', '-mcmodel=kernel', '-T', linker_script],
   install: false
 )

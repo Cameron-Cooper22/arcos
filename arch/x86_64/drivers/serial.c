@@ -1,4 +1,5 @@
 #include <drivers/serial.h>
+#include <ports.h>
 
 void serial_init(uint16_t port) {
   outb(port + 1, 0x00);
@@ -12,5 +13,5 @@ void serial_init(uint16_t port) {
 
 void serial_write(uint16_t port, uint8_t val) {
   while(!(inb(port + 5)&0x20)); // & 0b00100000
-  outb(port, c);
+  outb(port, val);
 }

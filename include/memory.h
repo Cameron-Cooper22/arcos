@@ -12,23 +12,27 @@
 #include <stdint.h>
 #define V2P(a) ((uintptr_t)(a) & ~KERNEL_OFFSET)
 #define P2V(a) ((uintptr_t)(a) | KERNEL_OFFSET)
+#define incptr(p, n) ((void *)(((uintptr_t)(p)) + (n)))
 #endif
 
-#ifndef PAGE_SIZE
-#define PAGE_SIZE (0x1000)
-#endif
+#define P1_OFFSET(a) (((a)>>12) & 0x1FF)
+#define P2_OFFSET(a) (((a)>>21) & 0x1FF)
+#define P3_OFFSET(a) (((a)>>30) & 0x1FF)
+#define P4_OFFSET(a) (((a)>>39) & 0x1FF)
 
-#ifndef PAGE_PRESENT
-#define PAGE_PRESENT (0x001)
-#endif
+#define PAGE_PRESENT      0x001
+#define PAGE_WRITE        0x002
+#define PAGE_USER         0x004
+#define PAGE_HUGE         0x080
+#define PAGE_GLOBAL       0x100
 
-#ifndef PAGE_WRITE
-#define PAGE_WRITE (0x001)
-#endif
+#define PAGE_SIZE       0x1000
+#define ENTRIES_PER_PT  512
 
-#ifndef ENTRIES_PER_PT
-#define ENTRIES_PER_PT (0x200)
-#endif
+#ifndef __ASSEMBLER__
+#include <stddef.h>
+
+uint64_t kernel_P4;
 
 extern union PTE BootP4;
 extern int _kernel_start, _kernel_end;
@@ -51,4 +55,5 @@ void vmm_clear_page(uint64_t P4, uint64_t addr, int free);
 size_t memcpy_to_p4(uint64_t P4, void *dst, void *src, size_t n);
 size_t memcpy_from_p4(void *dst, uint64_t P4, void *src, size_t n);
 
+#endif
 #endif
