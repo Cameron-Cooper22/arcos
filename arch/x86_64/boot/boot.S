@@ -1,85 +1,142 @@
-#include <memory.h>
-.intel_syntax noprefix
+#define ASM_FILE	1
+#include <multiboot2.h>
 
-.section .bss
-.align PAGE_SIZE
-.skip PAGE_SIZE
-BootStack:
+#ifdef HAVE_ASM_USCORE
+#define EXT_C(sym)	_
+#else
+#define EXT_C(sym)	sym
+#endif
 
-.section .text
-.code32
-.global _start
-_start:
+#define STACK_SIZE	0x4000
+
+#ifdef __ELF__
+#define AOUT_KLUDGE 	0
+#else
+#define AOUT_KLUDGE MULTIBOOT_AOUT_KLUDGE
+#endif
+  
+  .code32
+  .section .multiboot
+  .align 8
+multiboot_header:
+  .long MB2_HEADER_MAGIC
+  .long MULTIBOOT_ARCHITECTURE_I386
+  .long multiboot_header_end - multiboot_header
+  .long -(MB2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
+
+#ifndef __ELF__
+address_tag_start:
+  .short MULTIBOOT_HEADER_TAG_ADDRESS
+  .short MULTIBOOT_HEADER_TAG_OPTIONAL
+  .long address_tag_end - address_tag_start
+  .long multiboot_header
+  .long _start
+  .long _edata
+  .long _end
+address_tag_end:
+framebuffer_tag_start:
+  .short MULTIBOOT_HEADER_TAG_FRAMEBUFFER
+  .short MULTIBOOT_HEADER_TAG_OPTIONAL
+  .long framebuffer_tag_end - framebuffer_tag_start
+  .long 1024
+  .long 768
+  .long 32
+framebuffer_tag_end:
+
+  .globl bootstrap, init_pml4, init_pdp, init_pd
+bootstrap:
   cli
 
-  mov edi, eax
-  mov esi, ebx
+  lgdt (init_gdt64_ptr - KERNEL_VMA)
 
-  mov esp, offset V2P(BootStack)
-  
-  // PAE bit
-  mov eax, cr4
-  or eax, 1<<5
-  mov cr4, eax
-  
-  // load BootP4
-  mov eax, offset V2P(BootP4)
-  mov cr3, eax
+  movl $(init_stack_end - KERNEL_VMA), %esp
 
-  // set EFER.LME
-  mov ecx, 0x0C0000080
+  pushl $0
+  popf
+
+  pushl %eax
+  pushl %ebx
+
+  xorl %eax, %eax
+  movl $(_bss - KERNEL_VMA), %edi
+  movl $(_end - KERNEL_VMA), %ecx
+  subl %edi, %ecx
+  cld
+  rep	stosb
+
+  popl %esi
+  popl %edi
+
+  movl %cr0, %eax
+  andl $0x7fffffff, %eax
+  movl %eax, %cr0
+
+  movl %cr4, %eax
+  orl $0x20, %eax
+  movl %eax, %cr4
+
+  movl $(init_pml4 - KERNEL_VMA), %eax
+  mov %eax, %cr3
+
+  movl $0xc0000080, %ecx
   rdmsr
-  or eax, 1 << 8
+
+  orl $0x00000101, %eax
   wrmsr
 
-  // enabling Paging
-  mov eax, cr0
-  or eax, 1<<31
-  mov cr0, eax
+  movl %cr0, %eax
+  orl $0x80000000, %eax
+  movl %eax, %cr0
 
-  // load gdt
-  lgdt [V2P(BootGDTp)]
+  ljmp $0x08, $(boot64 - KERNEL_VMA)
 
-  // update CS via long jump
-  jmp 0x8:V2P(lm_start)
+.data
+.align 16
+gdt64:
+  .quad 0x0000000000000000
+  .quad 0x0020980000000000
+gdt64_end:
+
+.align 16
+init_gdt64_ptr:
+  .word gdt64_end - gdt64 - 1
+  .long gdt64 - KERNEL_VMA
+
+  .align 0x1000
+init_pml4:
+  .quad init_pdp - KERNEL_VMA + 3
+  .fill 510,8,0
+  .quad init_pdp - KERNEL_VMA + 3
+
+init_pdp:
+  .quad init_pd - KERNEL_VMA + 3
+  .fill 509,8,0
+  .quad init_pd - KERNEL_VMA + 3
+  .fill 1,8,0
+
+init_pd:
+  .quad 0x0000000000000083
+  .quad 0x0000000000200083
+  .fill 510,8,0
+
+init_stack_start:
+  .fill 0x1000,1,0
+init_stack_end:
 
 .code64
-lm_start:
-  mov eax, 0x0
-  mov ss, eax
-  mov ds, eax
-  mov es, eax
+boot64_high:
+  movq $KERNEL_VMA, %rax
+  addq %rax, %rsp
 
-  movabs rax, offset upper_memory
-  jmp rax
+  movq $0x0, init_pml4
+  invlpg 0
 
-upper_memory:
-  movabs rax, KERNEL_OFFSET
-  add rsp, rax
+  call EXT_C(kmain)
 
-  mov rax, 0
-  movabs [BootP4], rax
-
-  mov rax, cr3
-  mov cr3, rax
-
-
-  movabs rax, offset GDTp
-  lgdt [rax]
-  mov rax, 0x0
-  mov ss, rax
-  mov ds, rax
-  mov es, rax
-
-  movabs rax, offset .reload_cs
-  pushq 0x8
-  push rax
-  retfq
-
-.reload_cs:
-.extern kmain
-  movabs rax, offset kmain
-  call rax
-
+boot64_hang:
   hlt
-  jmp $
+  jmp boot64_hang
+
+boot64:
+  movabsq $boot64_high, %rax
+  jmp *%rax
