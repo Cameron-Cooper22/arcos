@@ -1,1 +1,0 @@
-option('arch', type : 'string', description : 'Sets the arch of the build. (x86(_64), ARM64, etc)')
