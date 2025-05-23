@@ -14,7 +14,8 @@
 #else
 #define AOUT_KLUDGE MULTIBOOT_AOUT_KLUDGE
 #endif
-  
+  .equ KERNEL_VMA, 0xFFFFFFFF80000000
+
   .code32
   .section .multiboot
   .align 8
@@ -23,8 +24,8 @@ multiboot_header:
   .long MULTIBOOT_ARCHITECTURE_I386
   .long multiboot_header_end - multiboot_header
   .long -(MB2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
+multiboot_header_end:
 
-#ifndef __ELF__
 address_tag_start:
   .short MULTIBOOT_HEADER_TAG_ADDRESS
   .short MULTIBOOT_HEADER_TAG_OPTIONAL
@@ -34,6 +35,7 @@ address_tag_start:
   .long _edata
   .long _end
 address_tag_end:
+// TODO: Add framebuffer support. Way better than VGA
 framebuffer_tag_start:
   .short MULTIBOOT_HEADER_TAG_FRAMEBUFFER
   .short MULTIBOOT_HEADER_TAG_OPTIONAL
