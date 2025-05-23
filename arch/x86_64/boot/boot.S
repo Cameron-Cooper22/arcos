@@ -43,8 +43,8 @@ framebuffer_tag_start:
   .long 32
 framebuffer_tag_end:
 
-  .globl bootstrap, init_pml4, init_pdp, init_pd
-bootstrap:
+  .globl _bootstrap, init_pml4, init_pdp, init_pd
+_bootstrap:
   cli
 
   lgdt (init_gdt64_ptr - KERNEL_VMA)
