@@ -72,7 +72,7 @@ all: arcos.elf
 
 arcos.elf: kernel arch
 	@echo "Linking $(words $($<)) object files..."
-	$(LD) -T $(ARCH_DIR)/linker.ld -o $@ $(ARCOS_OBJFILES)
+	$(LD) $(GLOBAL_LDFLAGS) -T $(ARCH_DIR)/linker.ld -o $@ $(ARCOS_OBJFILES)
 
 kernel: $(KERNEL_OBJFILES)
 
@@ -96,7 +96,7 @@ $(PROJ_ROOT)/$(BUILD_DIR)/kernel/%.o: $(PROJ_ROOT)/kernel/%.S
 	
 clean:
 	@echo "Cleaning files..."
-	-@$(RM) $(wildcard $(ARCOS_OBJFILES) $(ARCOS_DEPFILES) arcos.iso arcos) 
+	-@$(RM) $(ARCOS_OBJFILES)
 
 todolist: $(ARCOS_ALLFILES)
 	-@for file in $(ARCOS_SRCFILES); do fgrep -H -e TODO -e FIXME $$file 2>/dev/null; done; true
