@@ -26,14 +26,17 @@ multiboot_header:
   .long -(MB2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
 multiboot_header_end:
 
+.extern _start
+.extern _edata
+.extern _end
 address_tag_start:
   .short MULTIBOOT_HEADER_TAG_ADDRESS
   .short MULTIBOOT_HEADER_TAG_OPTIONAL
   .long address_tag_end - address_tag_start
-  .long multiboot_header
-  .long _start
-  .long _edata
-  .long _end
+  .long multiboot_header - KERNEL_VMA
+  .long _start - KERNEL_VMA
+  .long _edata - KERNEL_VMA
+  .long _end - KERNEL_VMA
 address_tag_end:
 // TODO: Add framebuffer support. Way better than VGA
 framebuffer_tag_start:
