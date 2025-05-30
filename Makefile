@@ -99,6 +99,6 @@ clean:
 	-@$(RM) $(ARCOS_OBJFILES)
 
 todolist: $(ARCOS_ALLFILES)
-	-@for file in $(ARCOS_SRCFILES); do fgrep -H -e TODO -e FIXME $$file 2>/dev/null; done; true
+	-@for file in $(ARCOS_SRCFILES); do fgrep --color=auto -H -e TODO -e FIXME $$file 2>/dev/null; done; true
 
 .PHONY: clean
