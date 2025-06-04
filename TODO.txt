@@ -1,2 +1,5 @@
   TODO: reorganize/refactor the interrupt handling for x86_64. might be moving aroud some files and moving code but not hard
   TODO: setup a good gdt and make sure the code cs is available for the IDT
+  TODO: start writing the HAL for x86_64. This will then provide the kernel for something to work with.
+  ├─NOTE: This will also allow for development for ARM chips such as the rp2350 being streamlined, as the kernel should be written in a way to allow for platform agnosticism as long as a basic HAL is applied. 
+  └─TODO: in each arch, have a config as to define what the HAL provides, so that upon compilation for that arch there should be little to no issues. This will take forever, but will be useful
