@@ -1,1 +1,2 @@
   TODO: reorganize/refactor the interrupt handling for x86_64. might be moving aroud some files and moving code but not hard
+  TODO: setup a good gdt and make sure the code cs is available for the IDT
