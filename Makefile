@@ -66,10 +66,10 @@ endif
 build: info arcos.iso
 
 run: build
-	@qemu-system-x86_64 -m 512M -cdrom $(PROJ_ROOT)/$(BUILD_DIR)/arcos.iso -boot d -serial stdio -display none
+	@qemu-system-x86_64 -m 512M -cdrom $(PROJ_ROOT)/$(BUILD_DIR)/arcos.iso -boot d -serial stdio -device isa-debug-exit,iobase=0xf4,iosize=0x04
 	
 run-gui: build
-	@qemu-system-x86_64 -m 512M -cdrom $(PROJ_ROOT)/$(BUILD_DIR)/arcos.iso -boot d -serial stdio
+	@qemu-system-x86_64 -m 512M -cdrom $(PROJ_ROOT)/$(BUILD_DIR)/arcos.iso -boot d
 
 arcos.iso: arcos.elf
 	@echo "Building image with grub-mkrescue"

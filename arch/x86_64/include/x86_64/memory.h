@@ -14,7 +14,7 @@
 #ifndef ASM_FILE
 #include <stdint.h>
 #define P2V(a) ((uint64_t)a + KERNEL_VMA)
-#define V2P(a) (a - KERNEL_VMA)
+#define V2P(a) ((a) - KERNEL_VMA)
 #endif
 
 #endif

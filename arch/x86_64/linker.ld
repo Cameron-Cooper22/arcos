@@ -7,10 +7,9 @@ ENTRY(_start)
 
 SECTIONS {
     . = KERNEL_VMA;
-    _start = .;
     .text : AT(ADDR(.text) - KERNEL_VMA) {
 	_code = .;
-      	*(.multiboot)
+      	KEEP(*(.multiboot))
       	*(.text*)
       	*(.gnu.linkonce.t*)
       	. = ALIGN(0x1000);
