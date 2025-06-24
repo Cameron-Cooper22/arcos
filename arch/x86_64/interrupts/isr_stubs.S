@@ -10,7 +10,7 @@ isr_stub_\num:
   iretq
   .endm
 
-extern exception_handler
+.extern exception_handler
 isr_no_err_stub 0
 isr_no_err_stub 1
 isr_no_err_stub 2
@@ -44,11 +44,40 @@ isr_no_err_stub 29
 isr_err_stub    30
 isr_no_err_stub 31
 
+#define STUB(n)    .quad isr_stub_##n
+
 .globl isr_stub_table
 isr_stub_table:
-  .set i,0
-  .rept 32
-    .quad isr_stub_\i
-    .set i,i+1
-  .endr
-  .set i,0
+    STUB(0)
+    STUB(1)
+    STUB(2)
+    STUB(3)
+    STUB(4)
+    STUB(5)
+    STUB(6)
+    STUB(7)
+    STUB(8)
+    STUB(9)
+    STUB(10)
+    STUB(11)
+    STUB(12)
+    STUB(13)
+    STUB(14)
+    STUB(15)
+    STUB(16)
+    STUB(17)
+    STUB(18)
+    STUB(19)
+    STUB(20)
+    STUB(21)
+    STUB(22)
+    STUB(23)
+    STUB(24)
+    STUB(25)
+    STUB(26)
+    STUB(27)
+    STUB(28)
+    STUB(29)
+    STUB(30)
+    STUB(31)
+#undef STUB

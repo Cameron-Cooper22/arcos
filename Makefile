@@ -23,8 +23,8 @@ ARCH_INCDIR := $(ARCH_DIR)/include
 ARCH_S_SRCFILES := $(shell find $(ARCH_DIR) -type f -name "*.S")
 ARCH_C_SRCFILES := $(shell find $(ARCH_DIR) -type f -name "*.c")
 ARCH_SRCFILES := $(ARCH_S_SRCFILES) $(ARCH_C_SRCFILES)
-ARCH_OBJFILES := $(patsubst $(PROJ_ROOT)/arch/%.c,$(PROJ_ROOT)/arch/$(BUILD_DIR)/%.o,$(ARCH_C_SRCFILES)) \
-		 $(patsubst $(PROJ_ROOT)/%.S,$(PROJ_ROOT)/$(BUILD_DIR)/%.o,$(ARCH_S_SRCFILES))
+ARCH_OBJFILES := $(patsubst $(PROJ_ROOT)/arch/$(ARCH)/%.c,$(PROJ_ROOT)/$(BUILD_DIR)/arch/$(ARCH)/%.o,$(ARCH_C_SRCFILES)) \
+		 $(patsubst $(PROJ_ROOT)/arch/$(ARCH)/%.S,$(PROJ_ROOT)/$(BUILD_DIR)/arch/$(ARCH)/%.o,$(ARCH_S_SRCFILES))
 ARCH_DEPFILES := $(patsubst %.c,%.o,$(ARCH_SRCFILES)) $(patsubst %.S,%.o,$(ARCH_SRCFILES))
 ARCH_CFLAGS := -I$(ARCH_INCDIR)
 
@@ -41,10 +41,9 @@ ARCOS_OBJFILES := $(ARCH_OBJFILES) $(KERNEL_OBJFILES)
 ARCOS_DEPFILES := $(ARCH_DEPFILES) $(KERNEL_DEPFILES)
 
 GLOBAL_ARFLAGS := rc
-GLOBAL_CFLAGS  := $(WARNINGS) -I$(PROJ_ROOT)/include -g -std=gnu99 -nostdlib -ffreestanding -fno-exceptions
+GLOBAL_CFLAGS  := $(WARNINGS) -I$(PROJ_ROOT)/include -I$(PROJ_ROOT)/arch/include -g -std=gnu99 -nostdlib -ffreestanding -fno-exceptions -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mcmodel=kernel
 GLOBAL_LDFLAGS := 
 
-# TODO: Let the compiler(s) and binutils be changed by prefix/ARCH
 CC := $(ARCH)-$(TARGET_TYPE)-gcc
 AR := $(ARCH)-$(TARGET_TYPE)-ar
 AS := $(ARCH)-$(TARGET_TYPE)-as
@@ -64,15 +63,29 @@ endif
 ###############################################
 ################## RECIPES ####################
 ###############################################
-all: arcos.elf
+build: info arcos.iso
+
+run: build
+	@qemu-system-x86_64 -m 512M -cdrom $(PROJ_ROOT)/$(BUILD_DIR)/arcos.iso -boot d -serial stdio -display none
+	
+run-gui: build
+	@qemu-system-x86_64 -m 512M -cdrom $(PROJ_ROOT)/$(BUILD_DIR)/arcos.iso -boot d -serial stdio
+
+arcos.iso: arcos.elf
+	@echo "Building image with grub-mkrescue"
+	@echo "sysroot path:	$(PROJ_ROOT)/sysroot/"
+	@cp $(PROJ_ROOT)/$(BUILD_DIR)/$< $(PROJ_ROOT)/sysroot/boot/$<
+	@grub-mkrescue -o $(PROJ_ROOT)/$(BUILD_DIR)/$@ $(PROJ_ROOT)/sysroot/
+
+info:
 	@echo "Project Root: $(PROJ_ROOT)"
 	@echo "Building for $@"
 	@echo "Using compiler $(CC)"
 	@mkdir -p $(BUILD_DIR)
 
 arcos.elf: kernel arch
-	@echo "Linking $(words $($<)) object files..."
-	$(LD) $(GLOBAL_LDFLAGS) -T $(ARCH_DIR)/linker.ld -o $@ $(ARCOS_OBJFILES)
+	@echo "Linking $(words $(ARCOS_OBJFILES)) object files..."
+	$(LD) $(GLOBAL_LDFLAGS) -T $(ARCH_DIR)/linker.ld -o $(PROJ_ROOT)/$(BUILD_DIR)/$@ $(ARCOS_OBJFILES)
 
 kernel: $(KERNEL_OBJFILES)
 

@@ -40,63 +40,63 @@
 #define TSS_NUM_ENTRIES 1
 
 struct gdt_entry_t {
-  uint16_t limit_low;
-  uint16_t base_low;
-  uint8_t base_middle;
-  uint8_t seg_type: 4;
-  uint8_t descriptor_type: 1;
-  uint8_t dpl: 2;
-  uint8_t present: 1;
-  uint8_t limit_high: 4;
-  uint8_t avl: 1;
-  uint8_t l: 1;
-  uint8_t db: 1;
-  uint8_t g: 1;
-  uint8_t base_high;
+    uint16_t limit_low;
+    uint16_t base_low;
+    uint8_t base_middle;
+    uint8_t seg_type: 4;
+    uint8_t descriptor_type: 1;
+    uint8_t dpl: 2;
+    uint8_t present: 1;
+    uint8_t limit_high: 4;
+    uint8_t avl: 1;
+    uint8_t l: 1;
+    uint8_t db: 1;
+    uint8_t g: 1;
+    uint8_t base_high;
 } __attribute__((packed));
 
 struct gdt_ptr_t {
-  uint16_t limit;
-  uint64_t base;
+    uint16_t limit;
+    uint64_t base;
 } __attribute__((packed));
 
 struct TSS {
-  uint32_t reserved_0;
-  uint64_t rsp0;
-  uint64_t rsp1;
-  uint64_t rsp2;
-  uint64_t reserved_3;
-  uint64_t ist1;
-  uint64_t ist2;
-  uint64_t ist3;
-  uint64_t ist4;
-  uint64_t ist5;
-  uint64_t ist6;
-  uint64_t ist7;
+    uint32_t reserved_0;
+    uint64_t rsp0;
+    uint64_t rsp1;
+    uint64_t rsp2;
+    uint64_t reserved_3;
+    uint64_t ist1;
+    uint64_t ist2;
+    uint64_t ist3;
+    uint64_t ist4;
+    uint64_t ist5;
+    uint64_t ist6;
+    uint64_t ist7;
 } __attribute__((packed)) TSS;
 
 struct tss_entry_t {
-  uint16_t limit_low;
-  uint16_t base_low;
-  uint8_t base_middle;
-  uint8_t seg_type: 4;
-  uint8_t descriptor_type: 1;
-  uint8_t dpl: 2;
-  uint8_t present: 1;
-  uint8_t limit_high: 4;
-  uint8_t avl: 1;
-  uint8_t l: 1;
-  uint8_t db: 1;
-  uint8_t g: 1;
+    uint16_t limit_low;
+    uint16_t base_low;
+    uint8_t base_middle;
+    uint8_t seg_type: 4;
+    uint8_t descriptor_type: 1;
+    uint8_t dpl: 2;
+    uint8_t present: 1;
+    uint8_t limit_high: 4;
+    uint8_t avl: 1;
+    uint8_t l: 1;
+    uint8_t db: 1;
+    uint8_t g: 1;
 
-  uint8_t base_high;
-  uint32_t base_top;
-  uint32_t reserved;
+    uint8_t base_high;
+    uint32_t base_top;
+    uint32_t reserved;
 } __attribute__((packed));
 
 struct gdt_t {
-  struct gdt_entry_t gdt_entries[GDT_NUM_ENTRIES];
-  struct tss_entry_t tss_entries[TSS_NUM_ENTRIES];
+    struct gdt_entry_t gdt_entries[GDT_NUM_ENTRIES];
+    struct tss_entry_t tss_entries[TSS_NUM_ENTRIES];
 } __attribute__((packed));
 
 __attribute__((aligned(8)))

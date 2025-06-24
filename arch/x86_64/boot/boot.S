@@ -1,147 +1,108 @@
-#define ASM_FILE	1
-#include <multiboot2.h>
+#define ASM_FILE
+#include <x86_64/multiboot2.h>
+#include <x86_64/boot.h>
+#include <x86_64/memory.h>
 
-#ifdef HAVE_ASM_USCORE
-#define EXT_C(sym)	_
-#else
-#define EXT_C(sym)	sym
-#endif
+.globl kmain
+.code32
+.section .multiboot
+.align 0x08
+mb2_header_start:
+    .long MB2_HEADER_MAGIC
+    .long MULTIBOOT_ARCHITECTURE_I386
+    .long mb2_header_end - mb2_header_start
+    .long -(MB2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (mb2_header_end - mb2_header_start))
+mb2_header_end:
 
-#define STACK_SIZE	0x4000
+.section .text
+.globl _start
+_start:
+    cli
+    mov V2P(stack_top), %esp
 
-#ifdef __ELF__
-#define AOUT_KLUDGE 	0
-#else
-#define AOUT_KLUDGE MULTIBOOT_AOUT_KLUDGE
-#endif
-  .equ KERNEL_VMA, 0xFFFFFFFF80000000
+    call check_mb2
 
-  .code32
-  .section .multiboot
-  .align 8
-multiboot_header:
-  .long MB2_HEADER_MAGIC
-  .long MULTIBOOT_ARCHITECTURE_I386
-  .long multiboot_header_end - multiboot_header
-  .long -(MB2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
-multiboot_header_end:
+    call enable_paging
 
-.extern _start
-.extern _edata
-.extern _end
-address_tag_start:
-  .short MULTIBOOT_HEADER_TAG_ADDRESS
-  .short MULTIBOOT_HEADER_TAG_OPTIONAL
-  .long address_tag_end - address_tag_start
-  .long multiboot_header - KERNEL_VMA
-  .long _start - KERNEL_VMA
-  .long _edata - KERNEL_VMA
-  .long _end - KERNEL_VMA
-address_tag_end:
-// TODO: Add framebuffer support. Way better than VGA
-framebuffer_tag_start:
-  .short MULTIBOOT_HEADER_TAG_FRAMEBUFFER
-  .short MULTIBOOT_HEADER_TAG_OPTIONAL
-  .long framebuffer_tag_end - framebuffer_tag_start
-  .long 1024
-  .long 768
-  .long 32
-framebuffer_tag_end:
+    lgdt gdt64_ptr - KERNEL_VMA
+    mov $0x10, %ax
+    mov %ax, %ds
+    mov %ax, %ss
+    ljmp $0x08, $long_mode_entry - KERNEL_VMA
 
-  .globl _bootstrap, init_pml4, init_pdp, init_pd
-_bootstrap:
-  cli
+check_mb2:
+    cmp $0x36d76289, %eax
+    jne .hang
+    ret
 
-  lgdt (init_gdt64_ptr - KERNEL_VMA)
 
-  movl $(init_stack_end - KERNEL_VMA), %esp
+enable_paging:
+    mov $pml4_table - KERNEL_VMA, %eax
+    mov %eax, %cr3
 
-  pushl $0
-  popf
+    mov %cr4, %eax
+    or $0x20, %eax
+    mov %eax, %cr4
 
-  pushl %eax
-  pushl %ebx
+    mov %cr0, %eax
+    or $0x80000000, %eax
+    mov %eax, %cr0
 
-  xorl %eax, %eax
-  movl $(_bss - KERNEL_VMA), %edi
-  movl $(_end - KERNEL_VMA), %ecx
-  subl %edi, %ecx
-  cld
-  rep	stosb
+    mov $0xc0000080, %ecx
+    rdmsr
+    or $0x00000100, %eax
+    wrmsr
 
-  popl %esi
-  popl %edi
+    ret
 
-  movl %cr0, %eax
-  andl $0x7fffffff, %eax
-  movl %eax, %cr0
-
-  movl %cr4, %eax
-  orl $0x20, %eax
-  movl %eax, %cr4
-
-  movl $(init_pml4 - KERNEL_VMA), %eax
-  mov %eax, %cr3
-
-  movl $0xc0000080, %ecx
-  rdmsr
-
-  orl $0x00000101, %eax
-  wrmsr
-
-  movl %cr0, %eax
-  orl $0x80000000, %eax
-  movl %eax, %cr0
-
-  ljmp $0x08, $(boot64 - KERNEL_VMA)
-
-.data
-.align 16
+.section .data
+.align 0x10
 gdt64:
-  .quad 0x0000000000000000
-  .quad 0x0020980000000000
-gdt64_end:
+    .quad 0x0000000000000000  # Null
+    .quad 0x00af9a000000ffff  # Kernel Code segment
+    .quad 0x00af92000000ffff  # Kernel Data segment
 
+.align 0x10
+gdt64_ptr:
+    .word V2P(gdt64_ptr) - V2P(gdt64) - 1
+    .long V2P(gdt64)
+
+.align 0x1000
+pml4_table:
+    .quad (pdpt_table + 0x03) # Have to use + due to relative addressing. fucking hate it but its fine
+    .fill 0x01fe,0x08,0x00
+    .quad (pdpt_table + 0x03)
+
+pdpt_table:
+    .quad (pd_table + 0x03)
+    .fill 0x01fd,0x08,0x00
+    .quad (pd_table + 0x03)
+    .fill 0x0001,0x08,0x00
+
+pd_table:
+    .quad 0x0000000000000000 | 0x83  # 2 MiB pages, RW + Present
+    .quad 0x0000000000200000 | 0x83  # 2 MiB pages, RW + Present
+    .fill 0x01fe,0x08,0x00
+
+.section .bss
 .align 16
-init_gdt64_ptr:
-  .word gdt64_end - gdt64 - 1
-  .long gdt64 - KERNEL_VMA
+stack_bottom:
+    .skip 4096
+stack_top:
 
-  .align 0x1000
-init_pml4:
-  .quad init_pdp - KERNEL_VMA + 3
-  .fill 510,8,0
-  .quad init_pdp - KERNEL_VMA + 3
-
-init_pdp:
-  .quad init_pd - KERNEL_VMA + 3
-  .fill 509,8,0
-  .quad init_pd - KERNEL_VMA + 3
-  .fill 1,8,0
-
-init_pd:
-  .quad 0x0000000000000083
-  .quad 0x0000000000200083
-  .fill 510,8,0
-
-init_stack_start:
-  .fill 0x1000,1,0
-init_stack_end:
-
+.extern kmain
 .code64
-boot64_high:
-  movq $KERNEL_VMA, %rax
-  addq %rax, %rsp
+.section .text
+long_mode_entry:
+    mov $0x10, %ax
+    mov %ax, %ds
+    mov %ax, %ss
 
-  movq $0x0, init_pml4
-  invlpg 0
+    lea kmain(%rip), %rax
+    jmp *%rax
 
-  call EXT_C(kmain)
-
-boot64_hang:
-  hlt
-  jmp boot64_hang
-
-boot64:
-  movabsq $boot64_high, %rax
-  jmp *%rax
+.hang:
+    cli
+.hang_loop:
+    hlt
+    jmp .hang_loop
