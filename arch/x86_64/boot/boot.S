@@ -20,6 +20,11 @@ _start:
     /* make sure interrupts are off */
     cli
     
+
+    mov    $0xf4, %dx
+    mov    $0x42, %al
+    outb   %al, (%dx)   # QEMU exits, host sees status 0x42
+
     /* load the GDT */
     lgdt (init_gdt64_ptr - KERNEL_VMA)
 
@@ -48,9 +53,9 @@ _start:
     popl %edi
     
     /* ensure that paging is off */
-    movl    %cr0, %eax
-    andl    $0x7fffffff, %eax
-    movl    %eax, %cr0
+    mov %cr0, %ebx
+    and ~(1 << 31), %ebx
+    mov %ebx, %cr0
     
     /* enable CR4.PAE */
     movl    %cr4, %eax
@@ -61,19 +66,27 @@ _start:
     movl    $0xc0000080, %ecx
     rdmsr
     /* set the PAE and SYSENTER bits */
-    orl     $0x00000101, %eax
+    orl     $(1 << 8), %eax
     wrmsr
 
     mov $(init_pml4 - KERNEL_VMA), %eax
     mov %eax, %cr3
 
+    or (1 << 31) | (1 << 0), %ebx
+    mov %ebx, %cr0
 
+
+    mov $0x08, %ax
+    mov %ax, %ds
+    mov %ax, %es
+    mov %ax, %fs
+    mov %ax, %gs
 
 .extern boot64
+    .byte 0x66
     pushw $0x08
-    pushl $(boot64 - KERNEL_VMA)
-    retl
-    
+    pushl boot64 - KERNEL_VMA
+    retf
 
 .data
 .align 16

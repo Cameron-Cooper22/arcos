@@ -5,7 +5,8 @@
 .extern init_pml4
 .section .text
 .global boot64
-boot64:       
+boot64:
+
     mov %cr0, %rax
     orl $0x80000000, %eax
     mov %rax, %cr0
@@ -26,3 +27,10 @@ boot64_high:
 .hang_loop:
     hlt
     jmp .hang_loop
+
+.global qemu_exit
+qemu_exit:
+    mov    $0xf4, %dx
+    mov    $0x42, %al
+    outb   %al, (%dx)   # QEMU exits, host sees status 0x42
+    ret

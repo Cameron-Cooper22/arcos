@@ -41,7 +41,7 @@ ARCOS_OBJFILES := $(ARCH_OBJFILES) $(KERNEL_OBJFILES)
 ARCOS_DEPFILES := $(ARCH_DEPFILES) $(KERNEL_DEPFILES)
 
 GLOBAL_ARFLAGS := rc
-GLOBAL_CFLAGS  := $(WARNINGS) -I$(PROJ_ROOT)/include -I$(PROJ_ROOT)/arch/include -g -std=gnu99 -nostdlib -ffreestanding -fno-exceptions -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mcmodel=kernel
+GLOBAL_CFLAGS  := $(WARNINGS) -I$(PROJ_ROOT)/include -I$(PROJ_ROOT)/arch/include -g -std=gnu99 -nostdlib -ffreestanding -fno-exceptions -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mcmodel=kernel -O0
 GLOBAL_LDFLAGS := 
 
 CC := $(ARCH)-$(TARGET_TYPE)-gcc

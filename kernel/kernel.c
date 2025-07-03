@@ -9,18 +9,17 @@ void clear_screen() {
 }
 
 void print_string(char* str) {
-    uintptr_t *vga_mem = (uintptr_t *)P2V(0xB8000);
+    uintptr_t *vga_mem = (uintptr_t *)P2V(0xb8000);
     while (*str) {
 	*vga_mem++ = *str++;
       	*vga_mem++ = 0x7;	// 0b0111
     }
 }
 
-
-void kmain(unsigned long magic, unsigned long mbi) {
+void kmain() {
     // for now, just debug via serial
-    serial_init();
-    serial_write("[TEST] Welcome home, Cameron.");
-    debug_print("DEBUG DEBUG DEBUG");
+    qemu_exit();
+    print_string("Welcome home. Praise be to the all knowing kernel");
     for (;;);
+
 }
