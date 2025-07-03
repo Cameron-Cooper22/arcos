@@ -65,6 +65,9 @@ endif
 ###############################################
 build: info arcos.iso
 
+debug: build
+	@qemu-system-x86_64 -cdrom build/arcos.iso -boot d -d int,in_asm,exec -no-reboot
+
 run: build
 	@qemu-system-x86_64 -m 512M -cdrom $(PROJ_ROOT)/$(BUILD_DIR)/arcos.iso -boot d -serial stdio -device isa-debug-exit,iobase=0xf4,iosize=0x04
 	

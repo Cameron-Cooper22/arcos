@@ -1,15 +1,16 @@
 OUTPUT_FORMAT(elf64-x86-64)
 
-KERNEL_LMA = 0x0000000000200000;
+KERNEL_LMA = 0x0000000000200000; /* 2 MEG */
 KERNEL_VMA = 0xffffffff80000000 + KERNEL_LMA;
 
 ENTRY(_start)
 
 SECTIONS {
     . = KERNEL_VMA;
+    _kstart = .;
     .text : AT(ADDR(.text) - KERNEL_VMA) {
 	_code = .;
-      	KEEP(*(.multiboot))
+      	*(.multiboot)
       	*(.text*)
       	*(.gnu.linkonce.t*)
       	. = ALIGN(0x1000);

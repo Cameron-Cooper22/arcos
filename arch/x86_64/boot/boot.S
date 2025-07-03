@@ -17,88 +17,109 @@ mb2_header_end:
 .section .text
 .globl _start
 _start:
+    /* make sure interrupts are off */
     cli
+    
+    /* load the GDT */
+    lgdt (init_gdt64_ptr - KERNEL_VMA)
 
-    mov V2P(stack_top), %esp 
+    /* give ourselves a functional stack */
+    movl $(init_stack_end - KERNEL_VMA), %esp
+    
+    /* reset EFLAGS. */
+    pushl $0
+    popf
+    
+    /* store the multiboot info */
+    pushl %eax
+    pushl %ebx
+    
+    /* zero out bss section */
+    xorl    %eax, %eax
+    movl    $(_bss - KERNEL_VMA), %edi
+    movl    $(_end - KERNEL_VMA), %ecx
+    subl    %edi, %ecx
+    
+    cld
+    rep	stosb
+    
+    /* get the multiboot info back */
+    popl %esi
+    popl %edi
+    
+    /* ensure that paging is off */
+    movl    %cr0, %eax
+    andl    $0x7fffffff, %eax
+    movl    %eax, %cr0
+    
+    /* enable CR4.PAE */
+    movl    %cr4, %eax
+    orl     $0x20, %eax
+    movl    %eax, %cr4
 
-
-    mov %cr4, %eax
-    or $0x20, %eax
-    mov %eax, %cr4
-
-    mov V2P(pml4_table), %eax
-    mov %eax, %cr3
-
-    mov $0xc0000080, %ecx
+    /* set IA32_EFER.LME */
+    movl    $0xc0000080, %ecx
     rdmsr
-    or $0x00000100, %eax
-    wrmsr 
+    /* set the PAE and SYSENTER bits */
+    orl     $0x00000101, %eax
+    wrmsr
+    
+    /* at this point we should be in IA-32e mode */
+    ljmp $0x08, $(boot64 - KERNEL_VMA)
 
-    mov $0xf4, %dx         # COM1 data port (0x3F8+0)
-    mov $'A', %al          # or whichever marker
-    outb %al, %dx
-
-    mov %cr0, %eax
-    or $0x80000000, %eax
-    mov %eax, %cr0
-
-    lgdt gdt64_ptr - KERNEL_VMA
-    mov $0x10, %ax
-    mov %ax, %ds
-    mov %ax, %ss
-
-    .code64
-    ljmp *jmp_ptr
-
-.section .data
-.align 0x10
-gdt64:
-    .quad 0x0000000000000000  # Null
-    .quad 0x00af9a000000ffff  # Kernel Code segment
-    .quad 0x00af92000000ffff  # Kernel Data segment
-
-.align 0x10
-gdt64_ptr:
-    .word V2P(gdt64_ptr) - V2P(gdt64) - 1
-    .long V2P(gdt64)
-
-.code32
-.align 0x1000
-pml4_table:
-    .quad (V2P(pdpt_table) + 0x03) # Have to use + due to relative addressing. fucking hate it but its fine
-    .zero 0x0ff8
-
-.align 0x1000
-pdpt_table:
-    .quad (V2P(pd_table) + 0x03)
-    .zero 0x0ff8
-
-pd_table:
-    .quad 0x0000000000000000 | 0x83  # 2 MiB pages, RW + Present
-    .quad 0x0000000000200000 | 0x83  # 2 MiB pages, RW + Present
-    .fill 0x01fe,0x08,0x00
-
-.section .bss
+.data
 .align 16
-stack_bottom:
-    .skip 4096
-stack_top:
+gdt64:
+    .quad 0x0000000000000000 // 0x00 NULL
+    .quad 0x00209A0000000000 // 0x08 KCODE64
+gdt64_end:
+
+.align 16
+init_gdt64_ptr:
+    .word gdt64_end - gdt64 - 1
+    .long gdt64 - KERNEL_VMA
+
+/* ident map of first 4MB GB, and mirror it at the -2GB mark  */
+.align 0x1000
+init_pml4:
+    .quad init_pdp - KERNEL_VMA + 3 // [0x0000000000000000 - 0x00000007ffffffff)
+    .fill 510,8,0
+    .quad init_pdp - KERNEL_VMA + 3 // [0xfffffff800000000 - 0xffffffffffffffff)
+
+init_pdp:
+    .quad init_pd - KERNEL_VMA + 3
+    .fill 509,8,0
+    .quad init_pd - KERNEL_VMA + 3
+    .fill 1,8,0
+
+init_pd:
+    .quad 0x0000000000000083 // 0MB - 2MB
+    .quad 0x0000000000200083 // 2MB - 4MB
+    .fill 510,8,0
+
+
+init_stack_start:
+    .fill 0x1000,1,0
+init_stack_end:
 
 .extern kmain
 .code64
 .section .text
-.align 0x08
-jmp_ptr:
-    .quad long_mode_entry
-    .word 0x08
 
-long_mode_entry:
-    mov $0x10, %ax
-    mov %ax, %ds
-    mov %ax, %ss
-
-    lea kmain(%rip), %rax
+boot64:
+    movabsq $boot64_high, %rax
     jmp *%rax
+
+boot64_high:
+    mov init_pml4 - KERNEL_VMA, %rax
+    mov %rax, %cr3
+
+    movq $KERNEL_VMA, %rax
+    addq %rax, %rsp
+    movq $0x0, init_pml4
+    invlpg 0
+
+    call kmain
 
 .hang:
     cli
