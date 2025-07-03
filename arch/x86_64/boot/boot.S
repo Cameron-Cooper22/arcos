@@ -63,15 +63,23 @@ _start:
     /* set the PAE and SYSENTER bits */
     orl     $0x00000101, %eax
     wrmsr
+
+    mov $(init_pml4 - KERNEL_VMA), %eax
+    mov %eax, %cr3
+
+
+
+.extern boot64
+    pushw $0x08
+    pushl $(boot64 - KERNEL_VMA)
+    retl
     
-    /* at this point we should be in IA-32e mode */
-    ljmp $0x08, $(boot64 - KERNEL_VMA)
 
 .data
 .align 16
 gdt64:
     .quad 0x0000000000000000 // 0x00 NULL
-    .quad 0x00209A0000000000 // 0x08 KCODE64
+    .quad 0x00209a0000000000 // 0x08 KCODE64
 gdt64_end:
 
 .align 16
@@ -80,6 +88,7 @@ init_gdt64_ptr:
     .long gdt64 - KERNEL_VMA
 
 /* ident map of first 4MB GB, and mirror it at the -2GB mark  */
+.global init_pml4
 .align 0x1000
 init_pml4:
     .quad init_pdp - KERNEL_VMA + 3 // [0x0000000000000000 - 0x00000007ffffffff)
@@ -101,28 +110,3 @@ init_pd:
 init_stack_start:
     .fill 0x1000,1,0
 init_stack_end:
-
-.extern kmain
-.code64
-.section .text
-
-boot64:
-    movabsq $boot64_high, %rax
-    jmp *%rax
-
-boot64_high:
-    mov init_pml4 - KERNEL_VMA, %rax
-    mov %rax, %cr3
-
-    movq $KERNEL_VMA, %rax
-    addq %rax, %rsp
-    movq $0x0, init_pml4
-    invlpg 0
-
-    call kmain
-
-.hang:
-    cli
-.hang_loop:
-    hlt
-    jmp .hang_loop
