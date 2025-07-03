@@ -16,6 +16,8 @@ void print_string(char* str) {
     }
 }
 
+extern void qemu_exit();
+
 void kmain() {
     // for now, just debug via serial
     qemu_exit();

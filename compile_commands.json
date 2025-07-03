@@ -1,7 +1,7 @@
 [
   {
     "arguments": [
-      "/home/cameronc/opt/cross/bin/x86_64-elf-gcc",
+      "/home/ccooper/opt/cross/bin/x86_64-elf-gcc",
       "-Wall",
       "-Wextra",
       "-pedantic",
@@ -17,8 +17,8 @@
       "-Wno-long-long",
       "-Wconversion",
       "-Wstrict-prototypes",
-      "-I/home/cameronc/dev/arcos/include",
-      "-I/home/cameronc/dev/arcos/arch/include",
+      "-I/home/ccooper/dev/arcos/include",
+      "-I/home/ccooper/dev/arcos/arch/include",
       "-g",
       "-std=gnu99",
       "-ffreestanding",
@@ -28,19 +28,20 @@
       "-mno-sse",
       "-mno-sse2",
       "-mcmodel=kernel",
+      "-O0",
       "-c",
       "-o",
-      "/home/cameronc/dev/arcos/build/kernel/kernel.o",
-      "/home/cameronc/dev/arcos/kernel/kernel.c"
+      "/home/ccooper/dev/arcos/build/kernel/kernel.o",
+      "/home/ccooper/dev/arcos/kernel/kernel.c"
     ],
-    "directory": "/home/cameronc/dev/arcos",
-    "file": "/home/cameronc/dev/arcos/kernel/kernel.c",
-    "output": "/home/cameronc/dev/arcos/build/kernel/kernel.o"
+    "directory": "/home/ccooper/dev/arcos",
+    "file": "/home/ccooper/dev/arcos/kernel/kernel.c",
+    "output": "/home/ccooper/dev/arcos/build/kernel/kernel.o"
   },
   {
     "arguments": [
-      "/home/cameronc/opt/cross/bin/x86_64-elf-gcc",
-      "-I/home/cameronc/dev/arcos/arch/x86_64/include",
+      "/home/ccooper/opt/cross/bin/x86_64-elf-gcc",
+      "-I/home/ccooper/dev/arcos/arch/x86_64/include",
       "-Wall",
       "-Wextra",
       "-pedantic",
@@ -56,8 +57,8 @@
       "-Wno-long-long",
       "-Wconversion",
       "-Wstrict-prototypes",
-      "-I/home/cameronc/dev/arcos/include",
-      "-I/home/cameronc/dev/arcos/arch/include",
+      "-I/home/ccooper/dev/arcos/include",
+      "-I/home/ccooper/dev/arcos/arch/include",
       "-g",
       "-std=gnu99",
       "-ffreestanding",
@@ -67,19 +68,20 @@
       "-mno-sse",
       "-mno-sse2",
       "-mcmodel=kernel",
+      "-O0",
       "-c",
       "-o",
-      "/home/cameronc/dev/arcos/build/arch/x86_64/serial.o",
-      "/home/cameronc/dev/arcos/arch/x86_64/serial.c"
+      "/home/ccooper/dev/arcos/build/arch/x86_64/interrupts/interrupts.o",
+      "/home/ccooper/dev/arcos/arch/x86_64/interrupts/interrupts.c"
     ],
-    "directory": "/home/cameronc/dev/arcos",
-    "file": "/home/cameronc/dev/arcos/arch/x86_64/serial.c",
-    "output": "/home/cameronc/dev/arcos/build/arch/x86_64/serial.o"
+    "directory": "/home/ccooper/dev/arcos",
+    "file": "/home/ccooper/dev/arcos/arch/x86_64/interrupts/interrupts.c",
+    "output": "/home/ccooper/dev/arcos/build/arch/x86_64/interrupts/interrupts.o"
   },
   {
     "arguments": [
-      "/home/cameronc/opt/cross/bin/x86_64-elf-gcc",
-      "-I/home/cameronc/dev/arcos/arch/x86_64/include",
+      "/home/ccooper/opt/cross/bin/x86_64-elf-gcc",
+      "-I/home/ccooper/dev/arcos/arch/x86_64/include",
       "-Wall",
       "-Wextra",
       "-pedantic",
@@ -95,8 +97,8 @@
       "-Wno-long-long",
       "-Wconversion",
       "-Wstrict-prototypes",
-      "-I/home/cameronc/dev/arcos/include",
-      "-I/home/cameronc/dev/arcos/arch/include",
+      "-I/home/ccooper/dev/arcos/include",
+      "-I/home/ccooper/dev/arcos/arch/include",
       "-g",
       "-std=gnu99",
       "-ffreestanding",
@@ -106,19 +108,20 @@
       "-mno-sse",
       "-mno-sse2",
       "-mcmodel=kernel",
+      "-O0",
       "-c",
       "-o",
-      "/home/cameronc/dev/arcos/build/arch/x86_64/interrupts/isr.o",
-      "/home/cameronc/dev/arcos/arch/x86_64/interrupts/isr.c"
+      "/home/ccooper/dev/arcos/build/arch/x86_64/interrupts/idt.o",
+      "/home/ccooper/dev/arcos/arch/x86_64/interrupts/idt.c"
     ],
-    "directory": "/home/cameronc/dev/arcos",
-    "file": "/home/cameronc/dev/arcos/arch/x86_64/interrupts/isr.c",
-    "output": "/home/cameronc/dev/arcos/build/arch/x86_64/interrupts/isr.o"
+    "directory": "/home/ccooper/dev/arcos",
+    "file": "/home/ccooper/dev/arcos/arch/x86_64/interrupts/idt.c",
+    "output": "/home/ccooper/dev/arcos/build/arch/x86_64/interrupts/idt.o"
   },
   {
     "arguments": [
-      "/home/cameronc/opt/cross/bin/x86_64-elf-gcc",
-      "-I/home/cameronc/dev/arcos/arch/x86_64/include",
+      "/home/ccooper/opt/cross/bin/x86_64-elf-gcc",
+      "-I/home/ccooper/dev/arcos/arch/x86_64/include",
       "-Wall",
       "-Wextra",
       "-pedantic",
@@ -134,8 +137,8 @@
       "-Wno-long-long",
       "-Wconversion",
       "-Wstrict-prototypes",
-      "-I/home/cameronc/dev/arcos/include",
-      "-I/home/cameronc/dev/arcos/arch/include",
+      "-I/home/ccooper/dev/arcos/include",
+      "-I/home/ccooper/dev/arcos/arch/include",
       "-g",
       "-std=gnu99",
       "-ffreestanding",
@@ -145,19 +148,20 @@
       "-mno-sse",
       "-mno-sse2",
       "-mcmodel=kernel",
+      "-O0",
       "-c",
       "-o",
-      "/home/cameronc/dev/arcos/build/arch/x86_64/interrupts/idt.o",
-      "/home/cameronc/dev/arcos/arch/x86_64/interrupts/idt.c"
+      "/home/ccooper/dev/arcos/build/arch/x86_64/interrupts/isr.o",
+      "/home/ccooper/dev/arcos/arch/x86_64/interrupts/isr.c"
     ],
-    "directory": "/home/cameronc/dev/arcos",
-    "file": "/home/cameronc/dev/arcos/arch/x86_64/interrupts/idt.c",
-    "output": "/home/cameronc/dev/arcos/build/arch/x86_64/interrupts/idt.o"
+    "directory": "/home/ccooper/dev/arcos",
+    "file": "/home/ccooper/dev/arcos/arch/x86_64/interrupts/isr.c",
+    "output": "/home/ccooper/dev/arcos/build/arch/x86_64/interrupts/isr.o"
   },
   {
     "arguments": [
-      "/home/cameronc/opt/cross/bin/x86_64-elf-gcc",
-      "-I/home/cameronc/dev/arcos/arch/x86_64/include",
+      "/home/ccooper/opt/cross/bin/x86_64-elf-gcc",
+      "-I/home/ccooper/dev/arcos/arch/x86_64/include",
       "-Wall",
       "-Wextra",
       "-pedantic",
@@ -173,8 +177,8 @@
       "-Wno-long-long",
       "-Wconversion",
       "-Wstrict-prototypes",
-      "-I/home/cameronc/dev/arcos/include",
-      "-I/home/cameronc/dev/arcos/arch/include",
+      "-I/home/ccooper/dev/arcos/include",
+      "-I/home/ccooper/dev/arcos/arch/include",
       "-g",
       "-std=gnu99",
       "-ffreestanding",
@@ -184,19 +188,20 @@
       "-mno-sse",
       "-mno-sse2",
       "-mcmodel=kernel",
+      "-O0",
       "-c",
       "-o",
-      "/home/cameronc/dev/arcos/build/arch/x86_64/interrupts/interrupts.o",
-      "/home/cameronc/dev/arcos/arch/x86_64/interrupts/interrupts.c"
+      "/home/ccooper/dev/arcos/build/arch/x86_64/serial.o",
+      "/home/ccooper/dev/arcos/arch/x86_64/serial.c"
     ],
-    "directory": "/home/cameronc/dev/arcos",
-    "file": "/home/cameronc/dev/arcos/arch/x86_64/interrupts/interrupts.c",
-    "output": "/home/cameronc/dev/arcos/build/arch/x86_64/interrupts/interrupts.o"
+    "directory": "/home/ccooper/dev/arcos",
+    "file": "/home/ccooper/dev/arcos/arch/x86_64/serial.c",
+    "output": "/home/ccooper/dev/arcos/build/arch/x86_64/serial.o"
   },
   {
     "arguments": [
-      "/home/cameronc/opt/cross/bin/x86_64-elf-gcc",
-      "-I/home/cameronc/dev/arcos/arch/x86_64/include",
+      "/home/ccooper/opt/cross/bin/x86_64-elf-gcc",
+      "-I/home/ccooper/dev/arcos/arch/x86_64/include",
       "-Wall",
       "-Wextra",
       "-pedantic",
@@ -212,8 +217,8 @@
       "-Wno-long-long",
       "-Wconversion",
       "-Wstrict-prototypes",
-      "-I/home/cameronc/dev/arcos/include",
-      "-I/home/cameronc/dev/arcos/arch/include",
+      "-I/home/ccooper/dev/arcos/include",
+      "-I/home/ccooper/dev/arcos/arch/include",
       "-g",
       "-std=gnu99",
       "-ffreestanding",
@@ -223,19 +228,20 @@
       "-mno-sse",
       "-mno-sse2",
       "-mcmodel=kernel",
+      "-O0",
       "-c",
       "-o",
-      "/home/cameronc/dev/arcos/build/arch/x86_64/boot/boot.o",
-      "/home/cameronc/dev/arcos/arch/x86_64/boot/boot.S"
+      "/home/ccooper/dev/arcos/build/arch/x86_64/interrupts/isr_stubs.o",
+      "/home/ccooper/dev/arcos/arch/x86_64/interrupts/isr_stubs.S"
     ],
-    "directory": "/home/cameronc/dev/arcos",
-    "file": "/home/cameronc/dev/arcos/arch/x86_64/boot/boot.S",
-    "output": "/home/cameronc/dev/arcos/build/arch/x86_64/boot/boot.o"
+    "directory": "/home/ccooper/dev/arcos",
+    "file": "/home/ccooper/dev/arcos/arch/x86_64/interrupts/isr_stubs.S",
+    "output": "/home/ccooper/dev/arcos/build/arch/x86_64/interrupts/isr_stubs.o"
   },
   {
     "arguments": [
-      "/home/cameronc/opt/cross/bin/x86_64-elf-gcc",
-      "-I/home/cameronc/dev/arcos/arch/x86_64/include",
+      "/home/ccooper/opt/cross/bin/x86_64-elf-gcc",
+      "-I/home/ccooper/dev/arcos/arch/x86_64/include",
       "-Wall",
       "-Wextra",
       "-pedantic",
@@ -251,8 +257,8 @@
       "-Wno-long-long",
       "-Wconversion",
       "-Wstrict-prototypes",
-      "-I/home/cameronc/dev/arcos/include",
-      "-I/home/cameronc/dev/arcos/arch/include",
+      "-I/home/ccooper/dev/arcos/include",
+      "-I/home/ccooper/dev/arcos/arch/include",
       "-g",
       "-std=gnu99",
       "-ffreestanding",
@@ -262,13 +268,54 @@
       "-mno-sse",
       "-mno-sse2",
       "-mcmodel=kernel",
+      "-O0",
       "-c",
       "-o",
-      "/home/cameronc/dev/arcos/build/arch/x86_64/interrupts/isr_stubs.o",
-      "/home/cameronc/dev/arcos/arch/x86_64/interrupts/isr_stubs.S"
+      "/home/ccooper/dev/arcos/build/arch/x86_64/boot/boot64.o",
+      "/home/ccooper/dev/arcos/arch/x86_64/boot/boot64.S"
     ],
-    "directory": "/home/cameronc/dev/arcos",
-    "file": "/home/cameronc/dev/arcos/arch/x86_64/interrupts/isr_stubs.S",
-    "output": "/home/cameronc/dev/arcos/build/arch/x86_64/interrupts/isr_stubs.o"
+    "directory": "/home/ccooper/dev/arcos",
+    "file": "/home/ccooper/dev/arcos/arch/x86_64/boot/boot64.S",
+    "output": "/home/ccooper/dev/arcos/build/arch/x86_64/boot/boot64.o"
+  },
+  {
+    "arguments": [
+      "/home/ccooper/opt/cross/bin/x86_64-elf-gcc",
+      "-I/home/ccooper/dev/arcos/arch/x86_64/include",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-Wshadow",
+      "-Wpointer-arith",
+      "-Wcast-align",
+      "-Wwrite-strings",
+      "-Wmissing-prototypes",
+      "-Wmissing-declarations",
+      "-Wredundant-decls",
+      "-Wnested-externs",
+      "-Winline",
+      "-Wno-long-long",
+      "-Wconversion",
+      "-Wstrict-prototypes",
+      "-I/home/ccooper/dev/arcos/include",
+      "-I/home/ccooper/dev/arcos/arch/include",
+      "-g",
+      "-std=gnu99",
+      "-ffreestanding",
+      "-fno-exceptions",
+      "-mno-red-zone",
+      "-mno-mmx",
+      "-mno-sse",
+      "-mno-sse2",
+      "-mcmodel=kernel",
+      "-O0",
+      "-c",
+      "-o",
+      "/home/ccooper/dev/arcos/build/arch/x86_64/boot/boot.o",
+      "/home/ccooper/dev/arcos/arch/x86_64/boot/boot.S"
+    ],
+    "directory": "/home/ccooper/dev/arcos",
+    "file": "/home/ccooper/dev/arcos/arch/x86_64/boot/boot.S",
+    "output": "/home/ccooper/dev/arcos/build/arch/x86_64/boot/boot.o"
   }
 ]
